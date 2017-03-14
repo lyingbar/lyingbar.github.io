@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"> 
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>music</title>
+        <style>
+            html, body {
+                height: 100%;
+                width: 100%;
+                top: 0;
+                left: 0;
+                margin: 0;
+            }
+            .buttons {
+                padding-top: 10vh;
+                height: 80%;
+                width: 100%;
+            }
+            .day {
+                height: 30vh;
+                width: 30vh;
+                margin: 0 auto;
+                border: 2px solid #101016;
+                border-radius: 99%;
+                margin-bottom: 10vh;
+            }
+            .night {
+                height: 30vh;
+                width: 30vh;
+                margin: 0 auto;
+                border-radius: 99%;
+                background-color: #101016;
+                color: white;
+            }
+            .text {
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 7vh;
+                width: 7vh;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="buttons">
+            <div class="day" onclick="playMusic('day')">
+                <p class="text">白天</p>
+            </div>
+            <div class="night" onclick="playMusic('night')">
+                <p class="text">夜晚</p>
+            </div>
+        </div>
+        <audio data-music="day" loop src="http://7xnnn5.com1.z0.glb.clouddn.com/justblue.mp3"></audio>
+        <audio data-music="night" loop src="http://7xnnn5.com1.z0.glb.clouddn.com/juewang.mp3"></audio>
+    </body>
+    <script>
+        var uri = "http://7xnnn5.com1.z0.glb.clouddn.com/"
+        var day_music = [
+            "justblue.mp3",
+            "mrloser.mp3",
+            "cropup.mp3"
+        ]
+        var night_music = [
+            "juewang.mp3",
+            "halloween.mp3",
+            "tuili.mp3"
+        ]
+        function playMusic(type) {
+            var audio = document.querySelector('audio[data-music="' + type +'"]')
+            if (!audio.paused) {
+                pauseAll()
+            } else {
+                pauseAll()
+                var music_arr
+                if (type == 'day') {
+                    music_arr = day_music
+                } else {
+                    music_arr = night_music
+                }
+                var random = getRandomInt(0, music_arr.length)
+                audio.src = uri + music_arr[random]
+                audio.play()
+            }
+        }
+        
+        function pauseAll() {
+            var audios = document.querySelectorAll('audio')
+            for(var i=0;i<audios.length;i++) {
+                audios[i].pause()
+            }
+        }
+
+        function getRandomInt(min, max) {
+            min = Math.ceil(min);
+            max = Math.floor(max);
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+    </script>
+</html>
+
