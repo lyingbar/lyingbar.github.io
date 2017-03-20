@@ -17,7 +17,7 @@
                 height: 80%;
                 width: 100%;
             }
-            .day {
+            .countdown {
                 height: 30vh;
                 width: 30vh;
                 margin: 0 auto;
@@ -41,12 +41,28 @@
                 width: 7vh;
                 margin: 0 auto;
             }
+            .number {
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 7vh;
+                width: 9vh;
+                margin: 0 auto;
+            }
+            .tooltip {
+                background-color: #999999;
+                color: white;
+                padding: 0 7vh;
+            }
         </style>
     </head>
     <body>
+        <div class="tooltip">
+            <p>倒计时操作提示：单击继续或暂停，双击重置</p>
+        </div>
         <div class="buttons">
-            <div class="day" onclick="playMusic('day')">
-                <p class="text">白天</p>
+            <div class="countdown" onclick="countdown()">
+                <p class="number" id="countdown">120</p>
             </div>
             <div class="night" onclick="playMusic('night')">
                 <p class="text">夜晚</p>
@@ -54,6 +70,8 @@
         </div>
         <audio data-music="day" loop src="http://7xnnn5.com1.z0.glb.clouddn.com/justblue.mp3"></audio>
         <audio data-music="night" loop src="http://7xnnn5.com1.z0.glb.clouddn.com/juewang.mp3"></audio>
+        <audio data-music="countdown" loop src="http://7xnnn5.com1.z0.glb.clouddn.com/countdown.mp3"></audio>
+        <audio data-music="timeout" src="http://7xnnn5.com1.z0.glb.clouddn.com/timeout.mp3"></audio>
     </body>
     <script>
         var uri = "http://7xnnn5.com1.z0.glb.clouddn.com/"
@@ -86,7 +104,7 @@
         }
         
         function pauseAll() {
-            var audios = document.querySelectorAll('audio')
+            var audios = document.querySelectorAll('audio[data-music="night"]')
             for(var i=0;i<audios.length;i++) {
                 audios[i].pause()
             }
@@ -96,6 +114,54 @@
             min = Math.ceil(min);
             max = Math.floor(max);
             return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+        var timer = undefined;
+        var clicktimer = undefined;
+        var clicks = 0;
+        var countnumber = document.getElementById('countdown');
+        var countdownsound = document.querySelector('audio[data-music="countdown"]');
+        var timeoutsound = document.querySelector('audio[data-music="timeout"]')
+
+        function countdown () {
+            clicks++;
+            if (clicks == 1) {
+                clicktimer = setTimeout(function () {
+                    if (timer) {
+                        countdownsound.pause();
+                        clearInterval(timer);
+                        timer = undefined;
+                        clicks = 0;
+                        return; 
+                    }
+                    var number = countnumber.textContent;
+                    timer = setInterval(function () {
+                        number = number - 1;
+                        if (number == 0) {
+                            timeoutsound.play();
+                            dbc();
+                            return;
+                        }
+                        if (number <= 10) {
+                            countdownsound.play();
+                        }
+                        countnumber.innerHTML  = number;
+                    }, 1000);
+                    clicks = 0;
+                }, 700);
+            } else {
+                dbc();
+            }
+        }
+
+        function dbc () {
+            clearTimeout(clicktimer);
+            clearInterval(timer);
+            timer = undefined;
+            countnumber.innerHTML = 120;
+            clicks = 0;
+            countdownsound.pause();
+            countdownsound.currentTime = 0;
         }
 
     </script>
